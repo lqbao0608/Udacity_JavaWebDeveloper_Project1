@@ -101,7 +101,7 @@
                                                     id="editNotes" type="button" class="btn btn-success">
                                                 Edit
                                             </button>
-                                            <a id="deleteNotes" th:href="'/note/'+${note.getNoteId()}+'/delete'" class="btn btn-danger">Delete</a>
+                                            <a id="deleteNotes" th:href="'/note/delete/'+${note.getNoteId()}" class="btn btn-danger">Delete</a>
                                         </td>
                                         <th scope="row">
                                             <span th:text="${note.getNoteTitle()}"></span>
@@ -174,7 +174,7 @@
                                             <button id="editCredentials" th:attr="onclick=|showCredentialModal('${credentialDTO.credentialId}','${credentialDTO.url}','${credentialDTO.username}','${credentialDTO.decryptPassword}')|" type="button" class="btn btn-success">
                                                 Edit
                                             </button>
-                                            <a id="deleteCredentials" th:href="'/credential/'+${credentialDTO.getCredentialId()+'/delete'}" class="btn btn-danger">Delete</a>
+                                            <a id="deleteCredentials" th:href="'/credential/delete/'+${credentialDTO.getCredentialId()}" class="btn btn-danger">Delete</a>
                                         </td>
                                         <th scope="row">
                                             <span th:text="${credentialDTO.getUrl()}"></span>

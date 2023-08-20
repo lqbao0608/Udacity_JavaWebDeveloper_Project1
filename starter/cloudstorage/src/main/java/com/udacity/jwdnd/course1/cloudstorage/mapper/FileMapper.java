@@ -16,7 +16,7 @@ public interface FileMapper {
             + " WHERE fileId = #{fileId}")
     File get(Integer fileId);
 
-    @Insert("INSERT INTO Files (fileName, contentType, fileSize, userId, fileData) "
+    @Insert("INSERT INTO Files(fileName, contentType, fileSize, userId, fileData) "
             + " VALUES(#{fileName}, #{contentType}, #{fileSize}, #{userId}, #{fileData})")
     @Options(useGeneratedKeys = true, keyProperty = "fileId")
     int insert(File file);

@@ -64,14 +64,10 @@ class CloudStorageApplicationTests {
 	 * Helper method for Udacity-supplied sanity checks.
 	 **/
 	private void doMockSignUp(String firstName, String lastName, String userName, String password) {
-		// Create a dummy account for logging in later.
-
-		// Visit the sign-up page.
 		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
 		driver.get("http://localhost:" + this.port + "/signup");
 		webDriverWait.until(ExpectedConditions.titleContains("Sign Up"));
 
-		// Fill out credentials
 		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("inputFirstName")));
 		WebElement inputFirstName = driver.findElement(By.id("inputFirstName"));
 		inputFirstName.click();
@@ -92,20 +88,16 @@ class CloudStorageApplicationTests {
 		inputPassword.click();
 		inputPassword.sendKeys(password);
 
-		// Attempt to sign up.
 		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("buttonSignUp")));
 		WebElement buttonSignUp = driver.findElement(By.id("buttonSignUp"));
 		buttonSignUp.click();
-
 	}
-
 
 	/**
 	 * PLEASE DO NOT DELETE THIS method.
 	 * Helper method for Udacity-supplied sanity checks.
 	 **/
 	private void doLogIn(String userName, String password) {
-		// Log in to our dummy account.
 		driver.get("http://localhost:" + this.port + "/login");
 		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
 
@@ -122,7 +114,6 @@ class CloudStorageApplicationTests {
 		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("login-button")));
 		WebElement loginButton = driver.findElement(By.id("login-button"));
 		loginButton.click();
-
 	}
 
 	/**
@@ -138,10 +129,8 @@ class CloudStorageApplicationTests {
 	 */
 	@Test
 	public void testRedirection() {
-		// Create a test account
-		doMockSignUp("Redirection", "Test", "RT", "123");
+		doMockSignUp("Redirection", "Test", "redirectiontest", "12345678");
 
-		// Check if we have been redirected to the log in page.
 		Assertions.assertEquals("http://localhost:" + this.port + "/login", driver.getCurrentUrl());
 	}
 
@@ -159,14 +148,12 @@ class CloudStorageApplicationTests {
 	 */
 	@Test
 	public void testBadUrl() {
-		// Create a test account
-		doMockSignUp("Marvin", "Abisrror", "sky", "admin");
-		doLogIn("sky", "admin");
+		doMockSignUp("Bao", "Luong", "baoluong", "admin@123");
 
-		// Try to access a random made-up URL.
-		driver.get("http://localhost:" + this.port + "/some-random-page");
+		doLogIn("baoluong", "admin@123");
+
+		driver.get("http://localhost:" + this.port + "/abc");
 	}
-
 
 	/**
 	 * PLEASE DO NOT DELETE THIS TEST. You may modify this test to work with the
@@ -182,38 +169,36 @@ class CloudStorageApplicationTests {
 	 */
 	@Test
 	public void testLargeUpload() {
-		// Create a test account
-		doMockSignUp("Marvin", "Abisrror", "sky", "admin");
-		doLogIn("sky", "admin");
+		doMockSignUp("Bao", "Luong", "baoluong", "admin@123");
 
-		// Try to upload an arbitrary large file
+		doLogIn("baoluong", "admin@123");
+
 		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
 		String fileName = "upload5m.zip";
-
 		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("fileUpload")));
 		WebElement fileSelectButton = driver.findElement(By.id("fileUpload"));
 		fileSelectButton.sendKeys(new File(fileName).getAbsolutePath());
-
 		WebElement uploadButton = driver.findElement(By.id("uploadButton"));
 		uploadButton.click();
+
 		try {
 			webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("success")));
 		} catch (org.openqa.selenium.TimeoutException e) {
-			System.out.println("Large File upload failed");
+			System.out.println("Upload large file is failed");
 		}
+
 		Assertions.assertFalse(driver.getPageSource().contains("HTTP Status 403 – Forbidden"));
 	}
 
 	/**
-	 * Add new notes
+	 * Add note
 	 */
-	public void addNotes() {
+	public void addNote() {
 		try {
-			// Create a test account
-			doMockSignUp("Marvin", "Abisrror", "sky", "admin");
-			doLogIn("sky", "admin");
+			doMockSignUp("Bao", "Luong", "baoluong", "admin@123");
 
-			// Create notes
+			doLogIn("baoluong", "admin@123");
+
 			WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
 
 			WebElement noteTab = driver.findElement(By.id("nav-notes-tab"));
@@ -227,31 +212,28 @@ class CloudStorageApplicationTests {
 			webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-title")));
 			WebElement noteTitle = driver.findElement(By.id("note-title"));
 			noteTitle.click();
-			noteTitle.sendKeys("Title1");
+			noteTitle.sendKeys("New note title");
 
 			webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-description")));
 			WebElement noteDescription = driver.findElement(By.id("note-description"));
 			noteDescription.click();
-			noteDescription.sendKeys("Description1");
-
+			noteDescription.sendKeys("New note description");
 
 			WebElement noteButton = driver.findElement(By.id("saveNotes"));
 			noteButton.click();
-
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	/**
-	 * Edit notes
+	 * Edit note
 	 */
 	@Test
 	public void editNote() {
 		try {
-			addNotes();
+			addNote();
 
-			// Create notes
 			WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
 
 			WebElement noteTab = driver.findElement(By.id("nav-notes-tab"));
@@ -265,18 +247,16 @@ class CloudStorageApplicationTests {
 			webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-title")));
 			WebElement noteTitle = driver.findElement(By.id("note-title"));
 			noteTitle.clear();
-			noteTitle.sendKeys("Title2");
+			noteTitle.sendKeys("Updated note title");
 
 			webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-description")));
 			WebElement noteDescription = driver.findElement(By.id("note-description"));
 			noteDescription.clear();
-			noteDescription.sendKeys("Description2");
-
+			noteDescription.sendKeys("Updated note description");
 
 			WebElement saveNotes = driver.findElement(By.id("saveNotes"));
 			saveNotes.click();
 
-			// Redirect home page
 			driver.get("http://localhost:" + this.port + "/home");
 
 		} catch (InterruptedException e) {
@@ -285,13 +265,12 @@ class CloudStorageApplicationTests {
 	}
 
 	/**
-	 * Delete notes
+	 * Delete note
 	 */
 	@Test
 	public void deleteNote() {
 		try {
-			// Create notes
-			addNotes();
+			addNote();
 
 			WebElement noteTab = driver.findElement(By.id("nav-notes-tab"));
 			noteTab.click();
@@ -301,7 +280,6 @@ class CloudStorageApplicationTests {
 			WebElement deleteNotes = driver.findElement(By.id("deleteNotes"));
 			deleteNotes.click();
 
-			// Redirect home page
 			driver.get("http://localhost:" + this.port + "/home");
 
 		} catch (InterruptedException e) {
@@ -310,15 +288,14 @@ class CloudStorageApplicationTests {
 	}
 
 	/**
-	 * Add new Credentials
+	 * Add credential
 	 */
-	public void addCredentials() {
+	public void addCredential() {
 		try {
-			// Create a test account
-			doMockSignUp("Marvin", "Abisrror", "sky", "admin");
-			doLogIn("sky", "admin");
+			doMockSignUp("Bao", "Luong", "baoluong", "admin@123");
 
-			// Create notes
+			doLogIn("baoluong", "admin@123");
+
 			WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
 
 			WebElement credentialsTab = driver.findElement(By.id("nav-credentials-tab"));
@@ -332,18 +309,17 @@ class CloudStorageApplicationTests {
 			webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-url")));
 			WebElement credentialUrl = driver.findElement(By.id("credential-url"));
 			credentialUrl.click();
-			credentialUrl.sendKeys("URL1");
+			credentialUrl.sendKeys("New credential url");
 
 			webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-username")));
 			WebElement credentialUsername = driver.findElement(By.id("credential-username"));
 			credentialUsername.click();
-			credentialUsername.sendKeys("username1");
+			credentialUsername.sendKeys("New credential username");
 
 			webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-password")));
 			WebElement credentialPassword = driver.findElement(By.id("credential-password"));
 			credentialPassword.click();
-			credentialPassword.sendKeys("password1");
-
+			credentialPassword.sendKeys("new credential password");
 
 			WebElement credentialButton = driver.findElement(By.id("saveCredentials"));
 			credentialButton.click();
@@ -354,13 +330,13 @@ class CloudStorageApplicationTests {
 	}
 
 	/**
-	 * Edit Credentials
+	 * Edit credential
 	 */
 	@Test
 	public void editCredential() {
 		try {
 			// Create Credentials
-			addCredentials();
+			addCredential();
 
 			WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
 
@@ -375,23 +351,21 @@ class CloudStorageApplicationTests {
 			webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-url")));
 			WebElement credentialUrl = driver.findElement(By.id("credential-url"));
 			credentialUrl.clear();
-			credentialUrl.sendKeys("URL2");
+			credentialUrl.sendKeys("Updated credential url");
 
 			webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-username")));
 			WebElement credentialUsername = driver.findElement(By.id("credential-username"));
 			credentialUsername.clear();
-			credentialUsername.sendKeys("username2");
+			credentialUsername.sendKeys("Updated credential username");
 
 			webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-password")));
 			WebElement credentialPassword = driver.findElement(By.id("credential-password"));
 			credentialPassword.clear();
-			credentialPassword.sendKeys("password2");
-
+			credentialPassword.sendKeys("Updated credential password");
 
 			WebElement saveNotes = driver.findElement(By.id("saveCredentials"));
 			saveNotes.click();
 
-			// Redirect home page
 			driver.get("http://localhost:" + this.port + "/home");
 
 		} catch (InterruptedException e) {
@@ -405,8 +379,7 @@ class CloudStorageApplicationTests {
 	@Test
 	public void deleteCredential() {
 		try {
-			// Create Credentials
-			addCredentials();
+			addCredential();
 
 			WebElement noteTab = driver.findElement(By.id("nav-credentials-tab"));
 			noteTab.click();
@@ -416,7 +389,6 @@ class CloudStorageApplicationTests {
 			WebElement deleteNotes = driver.findElement(By.id("deleteCredentials"));
 			deleteNotes.click();
 
-			// Redirect home page
 			driver.get("http://localhost:" + this.port + "/home");
 
 		} catch (InterruptedException e) {
