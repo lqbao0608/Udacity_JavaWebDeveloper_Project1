@@ -13,6 +13,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
@@ -21,6 +22,9 @@ class CloudStorageApplicationTests {
 
 	@LocalServerPort
 	private int port;
+
+	@Value("${chromedriver.url}")
+	private String chromeDriverUrl;
 
 	private WebDriver driver;
 
@@ -31,6 +35,7 @@ class CloudStorageApplicationTests {
 
 	@BeforeEach
 	public void beforeEach() {
+		System.setProperty("webdriver.chrome.driver", chromeDriverUrl);
 		this.driver = new ChromeDriver();
 	}
 
